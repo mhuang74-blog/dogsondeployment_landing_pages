@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Hero Boarders Network - Volunteer to Foster Military Pets</title>
+    <meta name="description" content="Join our volunteer network to help foster pets for military service members during deployments. Learn how you can make a difference.">
+    <style>
+        :root {
+            --us-red: #B22234;
+            --us-blue: #3C3B6E;
+            --us-white: #fff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--us-white);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--us-red);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--us-blue);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--us-red);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--us-blue);
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            color: var(--us-white);
+            padding: 8rem 1rem 4rem;
+            text-align: center;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--us-red);
+            color: var(--us-white);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            background: var(--us-blue);
+            color: var(--us-white);
+            border-color: var(--us-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(60, 59, 110, 0.3);
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .about h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--us-red);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .highlight-box {
+            background: #f0f8ff;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--us-red);
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: var(--us-red);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Contact Form Section */
+        .contact {
+            padding: 4rem 1rem;
+            background: #f8f9fa;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--us-red);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-intro {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        /* MailChimp Form Styling */
+        #mc_embed_signup {
+            background: white !important;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        #mc_embed_signup h2 {
+            color: var(--us-red) !important;
+            font-size: 1.5rem !important;
+            margin-bottom: 1rem !important;
+            text-align: center;
+        }
+
+        #mc_embed_signup .mc-field-group {
+            margin-bottom: 1.5rem !important;
+        }
+
+        #mc_embed_signup label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+        }
+
+        #mc_embed_signup input[type="email"],
+        #mc_embed_signup input[type="text"] {
+            width: 100% !important;
+            padding: 0.75rem !important;
+            border: 2px solid #ddd !important;
+            border-radius: 5px !important;
+            font-size: 1rem !important;
+            transition: border-color 0.3s ease !important;
+        }
+
+        #mc_embed_signup input[type="email"]:focus,
+        #mc_embed_signup input[type="text"]:focus {
+            outline: none !important;
+            border-color: var(--us-red) !important;
+        }
+
+        #mc_embed_signup .button {
+            background: var(--us-red) !important;
+            color: var(--us-white) !important;
+            padding: 1rem 2rem !important;
+            border: none !important;
+            border-radius: 5px !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+        }
+
+        #mc_embed_signup .button:hover {
+            background: var(--us-blue) !important;
+            color: var(--us-white) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        #mc_embed_signup .indicates-required {
+            text-align: center !important;
+            margin-bottom: 1rem !important;
+            color: #666 !important;
+        }
+
+        #mc_embed_signup .asterisk {
+            color: var(--us-red) !important;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--us-red);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 3rem;
+                transition: right 0.3s ease;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .about-content {
+                text-align: center;
+            }
+
+            #mc_embed_signup {
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .about-content {
+                flex-direction: row;
+                align-items: center;
+                gap: 3rem;
+            }
+
+            .about-text {
+                flex: 1;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Form validation styles */
+        .error {
+            border-color: var(--us-red) !important;
+        }
+
+        .error-message {
+            color: var(--us-red);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1003615230"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-1003615230');
+    </script>
+
+    <!-- Event snippet for new_boarder_signup conversion page
+    In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
+    <script>
+        function gtag_report_conversion(url) {
+        var callback = function () {
+            if (typeof(url) != 'undefined') {
+            window.location = url;
+            }
+        };
+        gtag('event', 'conversion', {
+            'send_to': 'AW-1003615230/XRhACJCAyewaEP7nx94D',
+            'value': 1.0,
+            'currency': 'USD',
+            'event_callback': callback
+        });
+        return false;
+        }
+    </script>
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Pet Hero Boarders</a>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Get Started</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Want to Foster a Pet for a Military Service Member?</h1>
+            <p>Join our interest list to learn how you can help—no commitment required.</p>
+            <a href="#contact" class="cta-button">Learn More</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-container">
+            <h2>How It Works</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Dogs on Deployment connects service members with compassionate volunteers willing to temporarily care for their pets during deployments and emergencies. If you're curious about becoming a DoD Boarder, this is the perfect place to start.</p>
+                    
+                    <div class="highlight-box">
+                        <h3>What You'll Learn</h3>
+                        <p>Just drop your name and email below—we'll send you everything you need to know about the Hero Pet Boarding Network, including how the process works and what to expect.</p>
+                    </div>
+                    
+                    <p><strong>This is not a registration form.</strong> You're simply signing up to learn more about how you can make a difference in the lives of our service members and their beloved pets.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <h2>Get Started Today</h2>
+            <p class="contact-intro">Ready to learn more about becoming a volunteer boarder? Sign up below to receive all the information you need.</p>
+            
+            <!-- MailChimp Form -->
+            <div id="mc_embed_shell">
+                <div id="mc_embed_signup">
+                    <form action="https://lovesetmatch.us7.list-manage.com/subscribe/post?u=c520f89e29e0da47e72861621&amp;id=e3e22bc014&amp;f_id=009195e4f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate">
+                        <input type="hidden" name="redirect" value="https://worship.michaelhuang.xyz">
+                        <div id="mc_embed_signup_scroll">
+                            <h2>Get More Info About Becoming a DoD Boarder</h2>
+                            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                            <div class="mc-field-group">
+                                <label for="mce-FNAME">First Name <span class="asterisk">*</span></label>
+                                <input type="text" name="FNAME" class=" text" id="mce-FNAME" value="">
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-EMAIL">Email <span class="asterisk">*</span></label>
+                                <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" value="" required="">
+                            </div>
+                            <div id="mce-responses" class="clear foot">
+                                <div class="response" id="mce-error-response" style="display: none;"></div>
+                                <div class="response" id="mce-success-response" style="display: none;"></div>
+                            </div>
+                            <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                <input type="text" name="b_c520f89e29e0da47e72861621_e3e22bc014" tabindex="-1" value="">
+                            </div>
+                            <div class="optionalParent">
+                                <div class="clear foot">
+                                    <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="Get Started">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Pet Hero Boarders Network. Making a difference, one pet at a time.</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form validation
+        const form = document.getElementById('mc-embedded-subscribe-form');
+        const emailInput = document.getElementById('mce-EMAIL');
+        const firstNameInput = document.getElementById('mce-FNAME');
+
+        // Email validation function
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Add real-time validation
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !validateEmail(email)) {
+                this.classList.add('error');
+                showError(this, 'Please enter a valid email address');
+            } else {
+                this.classList.remove('error');
+                hideError(this);
+            }
+        });
+
+        emailInput.addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                const email = this.value.trim();
+                if (validateEmail(email)) {
+                    this.classList.remove('error');
+                    hideError(this);
+                }
+            }
+        });
+
+        // Form submission validation
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const email = emailInput.value.trim();
+
+            // Validate email
+            if (!email) {
+                emailInput.classList.add('error');
+                showError(emailInput, 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                emailInput.classList.add('error');
+                showError(emailInput, 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                emailInput.classList.remove('error');
+                hideError(emailInput);
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Call gtag_report_conversion here
+            gtag_report_conversion();
+
+            // Show loading state
+            const submitButton = document.getElementById('mc-embedded-subscribe');
+            const originalText = submitButton.value;
+            submitButton.value = 'Submitting...';
+            submitButton.disabled = true;
+
+            // Re-enable button after 5 seconds (in case of network issues)
+            setTimeout(() => {
+                submitButton.value = originalText;
+                submitButton.disabled = false;
+            }, 5000);
+        });
+
+        // Helper functions for error display
+        function showError(input, message) {
+            hideError(input); // Remove any existing error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            input.parentNode.appendChild(errorDiv);
+        }
+
+        function hideError(input) {
+            const errorMessage = input.parentNode.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        }
+
+        // Intersection Observer for smooth animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections for animation
+        document.querySelectorAll('.about, .contact').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Add loading animation to CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    </script>
+</body>
+</html>

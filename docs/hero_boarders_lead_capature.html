@@ -384,18 +384,18 @@
     In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
     <script>
         function gtag_report_conversion(url) {
-        var callback = function () {
-            if (typeof(url) != 'undefined') {
-            window.location = url;
-            }
-        };
-        gtag('event', 'conversion', {
-            'send_to': 'AW-1003615230/XRhACJCAyewaEP7nx94D',
-            'value': 1.0,
-            'currency': 'USD',
-            'event_callback': callback
-        });
-        return false;
+            var callback = function () {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            };
+            gtag('event', 'conversion', {
+                'send_to': 'AW-1003615230/XRhACJCAyewaEP7nx94D',
+                'value': 1.0,
+                'currency': 'USD',
+                'event_callback': callback
+            });
+            return false;
         }
     </script>
     
@@ -593,7 +593,7 @@
                 return false;
             }
 
-            // Call gtag_report_conversion here
+            console.trace('Form validated. Calling gtag_report_conversion');
             gtag_report_conversion();
 
             // Show loading state
@@ -656,6 +656,7 @@
                 this.style.transform = '';
             }, 150);
         });
+
     </script>
 </body>
 </html>

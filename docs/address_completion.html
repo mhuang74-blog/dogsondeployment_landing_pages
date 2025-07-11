@@ -173,6 +173,7 @@
             };
             
             placesService.getDetails(request, (place, status) => {
+                console.log('getDetails callback:', status, place); // Debug log
                 if (status === google.maps.places.PlacesServiceStatus.OK && place) {
                     console.log('Place details received:', place);
                     fillAddressFields(place.address_components);
@@ -265,13 +266,13 @@
                 componentRestrictions: {} // Optionally restrict to country
             };
             
-            autocompleteService.getPlacePredictions(request, (predictions, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-                    window.predictions = predictions;
+            autocompleteService.getPlacePredictions(request, (preds, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && preds) {
+                    predictions = preds;
                     activePredictionIndex = -1;
                     showSuggestions(predictions);
                 } else {
-                    window.predictions = [];
+                    predictions = [];
                     hideSuggestions();
                 }
             });

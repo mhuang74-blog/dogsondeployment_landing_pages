@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Address Form with Google Maps New Places API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 32px 28px 24px 28px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #333;
+        }
+        form label {
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: 500;
+        }
+        form input[type="text"] {
+            width: 100%;
+            padding: 9px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        form input[type="text"]:focus {
+            border-color: #4285f4;
+            outline: none;
+        }
+        .error-message {
+            color: #d93025;
+            font-size: 0.95em;
+            margin-top: -12px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .success-message {
+            color: #188038;
+            font-size: 1em;
+            text-align: center;
+            margin-top: 18px;
+            display: none;
+        }
+        button[type="submit"] {
+            width: 100%;
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Address Form</h2>
+        <form id="address-form" autocomplete="off" novalidate>
+            <label for="street">Street Address</label>
+            <input type="text" id="street" name="street" placeholder="123 Main St" autocomplete="off" required>
+            <div class="error-message" id="street-error"></div>
+
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="City" autocomplete="off" required>
+            <div class="error-message" id="city-error"></div>
+
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" placeholder="State" autocomplete="off" required>
+            <div class="error-message" id="state-error"></div>
+
+            <label for="zip">Zip Code</label>
+            <input type="text" id="zip" name="zip" placeholder="Zip Code" autocomplete="off" required>
+            <div class="error-message" id="zip-error"></div>
+
+            <button type="submit">Submit</button>
+            <div class="success-message" id="success-message"></div>
+        </form>
+    </div>
+
+    <!-- Google Maps New Places API (AutocompleteSuggestion & Place) -->
+    <script>
+        // Global variables
+        let autocompleteService, placesService, sessionToken;
+        let predictions = [];
+        let activePredictionIndex = -1;
+        let suggestionBox;
+
+        // All function definitions must be before initGoogleMapsAPI
+        function createSuggestionBox() {
+            suggestionBox = document.createElement('div');
+            suggestionBox.id = 'autocomplete-suggestions';
+            suggestionBox.style.position = 'absolute';
+            suggestionBox.style.background = '#fff';
+            suggestionBox.style.border = '1px solid #ccc';
+            suggestionBox.style.borderTop = 'none';
+            suggestionBox.style.zIndex = '1000';
+            suggestionBox.style.width = document.getElementById('street').offsetWidth + 'px';
+            suggestionBox.style.maxHeight = '220px';
+            suggestionBox.style.overflowY = 'auto';
+            suggestionBox.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+            suggestionBox.style.display = 'none';
+            document.body.appendChild(suggestionBox);
+        }
+
+        function positionSuggestionBox() {
+            const input = document.getElementById('street');
+            const rect = input.getBoundingClientRect();
+            suggestionBox.style.left = rect.left + window.scrollX + 'px';
+            suggestionBox.style.top = rect.bottom + window.scrollY + 'px';
+            suggestionBox.style.width = rect.width + 'px';
+        }
+
+        function showSuggestions(preds) {
+            suggestionBox.innerHTML = '';
+            if (!preds.length) {
+                suggestionBox.style.display = 'none';
+                return;
+            }
+            preds.forEach((pred, idx) => {
+                const div = document.createElement('div');
+                div.textContent = pred.description;
+                div.style.padding = '10px 14px';
+                div.style.cursor = 'pointer';
+                div.style.background = idx === activePredictionIndex ? '#f1f3f4' : '#fff';
+                div.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    selectPrediction(idx);
+                });
+                suggestionBox.appendChild(div);
+            });
+            suggestionBox.style.display = 'block';
+            positionSuggestionBox();
+        }
+
+        function hideSuggestions() {
+            suggestionBox.style.display = 'none';
+            activePredictionIndex = -1;
+        }
+
+        function selectPrediction(idx) {
+            if (idx < 0 || idx >= predictions.length) return;
+            const placeId = predictions[idx].place_id;
+            const input = document.getElementById('street');
+            input.value = predictions[idx].description;
+            hideSuggestions();
+
+            // Get place details using PlacesService
+            const request = {
+                placeId: placeId,
+                fields: ['address_components', 'formatted_address']
+            };
+            
+            placesService.getDetails(request, (place, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+                    console.log('Place details received:', place);
+                    fillAddressFields(place.address_components);
+                } else {
+                    console.error('Error fetching place details:', status);
+                    // Fallback: try to parse the description manually
+                    parseAddressFromDescription(predictions[idx].description);
+                }
+            });
+        }
+
+        function fillAddressFields(components) {
+            console.log('Address components:', components);
+            let street_number = '', route = '', city = '', state = '', zip = '';
+            
+            for (const component of components) {
+                const types = component.types;
+                console.log('Component:', component.long_name, 'Types:', types);
+                
+                if (types.includes('street_number')) {
+                    street_number = component.long_name;
+                }
+                if (types.includes('route')) {
+                    route = component.long_name;
+                }
+                if (types.includes('locality')) {
+                    city = component.long_name;
+                }
+                if (types.includes('administrative_area_level_1')) {
+                    state = component.short_name;
+                }
+                if (types.includes('postal_code')) {
+                    zip = component.long_name;
+                }
+            }
+            
+            // Build street address
+            const streetAddress = [street_number, route].filter(Boolean).join(' ');
+            
+            console.log('Filling fields:', {
+                street: streetAddress,
+                city: city,
+                state: state,
+                zip: zip
+            });
+            
+            document.getElementById('street').value = streetAddress;
+            document.getElementById('city').value = city;
+            document.getElementById('state').value = state;
+            document.getElementById('zip').value = zip;
+        }
+
+        function parseAddressFromDescription(description) {
+            console.log('Parsing address from description:', description);
+            // Simple fallback parsing - this is not as reliable as the API
+            const parts = description.split(', ');
+            if (parts.length >= 3) {
+                document.getElementById('street').value = parts[0];
+                document.getElementById('city').value = parts[1];
+                const stateZip = parts[2].split(' ');
+                if (stateZip.length >= 2) {
+                    document.getElementById('state').value = stateZip[0];
+                    document.getElementById('zip').value = stateZip[1];
+                }
+            }
+        }
+
+        function debounce(fn, delay) {
+            let timer = null;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        function onStreetInput(e) {
+            const value = e.target.value;
+            if (!value) {
+                hideSuggestions();
+                return;
+            }
+            
+            sessionToken = sessionToken || new google.maps.places.AutocompleteSessionToken();
+            
+            // Use the AutocompleteService API
+            const request = {
+                input: value,
+                types: ['address'],
+                sessionToken: sessionToken,
+                componentRestrictions: {} // Optionally restrict to country
+            };
+            
+            autocompleteService.getPlacePredictions(request, (predictions, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+                    window.predictions = predictions;
+                    activePredictionIndex = -1;
+                    showSuggestions(predictions);
+                } else {
+                    window.predictions = [];
+                    hideSuggestions();
+                }
+            });
+        }
+
+        function onStreetKeyDown(e) {
+            if (!predictions.length || suggestionBox.style.display === 'none') return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activePredictionIndex = (activePredictionIndex + 1) % predictions.length;
+                showSuggestions(predictions);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activePredictionIndex = (activePredictionIndex - 1 + predictions.length) % predictions.length;
+                showSuggestions(predictions);
+            } else if (e.key === 'Enter') {
+                if (activePredictionIndex >= 0) {
+                    e.preventDefault();
+                    selectPrediction(activePredictionIndex);
+                }
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
+        }
+
+        function onClickOutside(e) {
+            const input = document.getElementById('street');
+            if (
+                e.target !== input &&
+                (!suggestionBox || !suggestionBox.contains(e.target))
+            ) {
+                hideSuggestions();
+            }
+        }
+
+        // Simple client-side validation
+        function showError(inputId, message) {
+            const errorDiv = document.getElementById(inputId + '-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        function hideError(inputId) {
+            const errorDiv = document.getElementById(inputId + '-error');
+            errorDiv.textContent = '';
+            errorDiv.style.display = 'none';
+        }
+
+        function validateFields() {
+            let valid = true;
+            // Street
+            const street = document.getElementById('street').value.trim();
+            if (!street) {
+                showError('street', 'Street address is required.');
+                valid = false;
+            } else {
+                hideError('street');
+            }
+            // City
+            const city = document.getElementById('city').value.trim();
+            if (!city) {
+                showError('city', 'City is required.');
+                valid = false;
+            } else {
+                hideError('city');
+            }
+            // State
+            const state = document.getElementById('state').value.trim();
+            if (!state) {
+                showError('state', 'State is required.');
+                valid = false;
+            } else {
+                hideError('state');
+            }
+            // Zip
+            const zip = document.getElementById('zip').value.trim();
+            if (!zip) {
+                showError('zip', 'Zip code is required.');
+                valid = false;
+            } else if (!/^\d{5}(-\d{4})?$/.test(zip)) {
+                showError('zip', 'Enter a valid zip code.');
+                valid = false;
+            } else {
+                hideError('zip');
+            }
+            return valid;
+        }
+
+        // Global callback function for Google Maps API - must be defined before loading the API
+        function initGoogleMapsAPI() {
+            // Initialize autocomplete and event listeners only after API is loaded
+            if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
+                console.error('Google Maps API not loaded properly');
+                alert('Google Maps API failed to load. Please check your internet connection and API key.');
+                return;
+            }
+            try {
+                autocompleteService = new google.maps.places.AutocompleteService();
+                placesService = new google.maps.places.PlacesService(document.createElement('div'));
+                createSuggestionBox();
+                console.log('Google Maps Places API initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Google Maps Places API:', error);
+                alert('Error initializing address autocomplete. Please check your API key.');
+                return;
+            }
+
+            const streetInput = document.getElementById('street');
+            streetInput.addEventListener('input', debounce(onStreetInput, 250));
+            streetInput.addEventListener('keydown', onStreetKeyDown);
+            window.addEventListener('resize', positionSuggestionBox);
+            window.addEventListener('scroll', positionSuggestionBox, true);
+            document.addEventListener('mousedown', onClickOutside);
+
+            // Hide error on input
+            ['street', 'city', 'state', 'zip'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => hideError(id));
+            });
+
+            // Validation and form submission
+            const form = document.getElementById('address-form');
+            const successMsg = document.getElementById('success-message');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                successMsg.style.display = 'none';
+
+                if (!validateFields()) {
+                    return;
+                }
+
+                successMsg.textContent = 'Address submitted successfully!';
+                successMsg.style.display = 'block';
+                form.reset();
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8XnCo7Bulkp7ano4t2SYTRCr6A-Li16o&libraries=places&callback=initGoogleMapsAPI"></script>
+    <!-- This script tag is now empty since all functions were moved to the first script tag -->
+    <script>
+        // All functions and variables are now defined in the first script tag above
+    </script>
+    <!-- 
+        IMPORTANT: 
+        Replace YOUR_API_KEY in the script src above with your actual Google Maps API key 
+        with Places API enabled.
+        
+        This implementation uses the Google Maps Places API AutocompleteService and PlacesService
+        for address autocomplete functionality.
+    -->
+</body>
+</html>

@@ -101,6 +101,8 @@
 
     <!-- Google Maps New Places API (AutocompleteSuggestion & Place) -->
     <script>
+        // === GOOGLE MAPS API KEY ===
+        const GOOGLE_MAPS_API_KEY = 'AIzaSyA8XnCo7Bulkp7ano4t2SYTRCr6A-Li16o'; // <-- Change this to your API key
         // Global variables
         let autocompleteService, placesService, sessionToken;
         let predictions = [];
@@ -409,7 +411,16 @@
             });
         }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8XnCo7Bulkp7ano4t2SYTRCr6A-Li16o&libraries=places&callback=initGoogleMapsAPI"></script>
+    <script>
+        // Dynamically inject Google Maps script with API key
+        (function() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMapsAPI`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+        })();
+    </script>
     <!-- This script tag is now empty since all functions were moved to the first script tag -->
     <script>
         // All functions and variables are now defined in the first script tag above

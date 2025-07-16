@@ -212,6 +212,109 @@
             font-size: 1.1rem;
         }
 
+        /* Volunteer Spotlight Section */
+        .volunteer-spotlight {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .volunteer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .volunteer-spotlight h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--us-red);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .volunteer-intro {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .volunteer-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .volunteer-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .volunteer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--us-red) 0%, #c0392b 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-header .volunteer-name {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-content .highlight {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--us-red);
+            margin: 1rem 0;
+            font-style: italic;
+            color: #666;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            background: var(--us-red);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .read-more-btn:hover {
+            background: var(--us-blue);
+            transform: translateY(-2px);
+        }
+
         /* MailChimp Form Styling */
         #mc_embed_signup {
             background: white !important;
@@ -431,6 +534,38 @@
                     
                     <p><strong>This is not a registration form.</strong> You're simply signing up to learn more about how you can make a difference in the lives of our service members and their beloved pets.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Spotlight Section -->
+    <section id="volunteer-spotlight" class="volunteer-spotlight">
+        <div class="volunteer-container">
+            <h2>Volunteer Spotlights</h2>
+            <p class="volunteer-intro">Meet some of our amazing volunteers who have made a difference in the lives of military service members and their pets.</p>
+            <div class="volunteer-cards">
+                                 <div class="volunteer-card">
+                     <div class="card-header">
+                         <h3>Melanie</h3>
+                         <p class="volunteer-name">Devoted DoD Boarder</p>
+                     </div>
+                     <div class="card-content">
+                         <p>Melanie has been a dedicated Dogs on Deployment boarder for years, providing loving care to military pets during their owners' deployments. Her commitment to supporting military families through pet boarding has made a significant impact on the lives of service members and their beloved companions.</p>
+                         <p class="highlight">"Being a DoD boarder has been one of the most rewarding experiences. Knowing I'm helping military families have peace of mind about their pets while they serve our country fills my heart."</p>
+                         <a href="https://dogsondeployment.blog/f/volunteer-spotlight-melanie-devoted-dod-boarder?blogcategory=Volunteer+Spotlight" class="read-more-btn" target="_blank">Read Melanie's Story</a>
+                     </div>
+                 </div>
+                 <div class="volunteer-card">
+                     <div class="card-header">
+                         <h3>Experienced Foster</h3>
+                         <p class="volunteer-name">From 100 Rescues to DoD Boarding</p>
+                     </div>
+                     <div class="card-content">
+                         <p>After fostering over 100 rescue animals, this volunteer found a new calling through Dogs on Deployment. Their experience with rescue animals provided the perfect foundation for boarding military pets, offering both the pets and their owners peace of mind during deployments.</p>
+                         <p class="highlight">"The transition from rescue fostering to DoD boarding was natural. The same love and care that rescue animals need is exactly what military pets deserve while their families serve our country."</p>
+                         <a href="https://dogsondeployment.blog/f/from-fostering-100-rescues-to-boarding-her-first-dod-pet?blogcategory=Volunteer+Spotlight" class="read-more-btn" target="_blank">Read Their Story</a>
+                     </div>
+                 </div>
             </div>
         </div>
     </section>

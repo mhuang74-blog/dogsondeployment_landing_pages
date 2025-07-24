@@ -498,8 +498,8 @@
     <!-- Event snippet for new_boarder_signup conversion page
     In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
     <script>
-        function gtag_report_conversion(url) {
-            var callback = function () {
+        function gtag_report_conversion(url, callback) {
+            var cb = callback || function () {
                 if (typeof(url) != 'undefined') {
                     window.location = url;
                 }
@@ -508,7 +508,7 @@
                 'send_to': 'AW-1003615230/XRhACJCAyewaEP7nx94D',
                 'value': 1.0,
                 'currency': 'USD',
-                'event_callback': callback
+                'event_callback': cb
             });
             return false;
         }
@@ -705,14 +705,18 @@
                 return false;
             }
 
-            console.trace('Form validated. Calling gtag_report_conversion');
-            gtag_report_conversion();
+            e.preventDefault(); // Prevent default submission
 
             // Show loading state
             const submitButton = document.getElementById('mc-embedded-subscribe');
             const originalText = submitButton.value;
             submitButton.value = 'Submitting...';
             submitButton.disabled = true;
+
+            // Call gtag_report_conversion and submit form in callback
+            gtag_report_conversion(undefined, function() {
+                form.submit();
+            });
 
             // Re-enable button after 5 seconds (in case of network issues)
             setTimeout(() => {
